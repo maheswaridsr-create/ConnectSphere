@@ -1,0 +1,542 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusConnect</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #3f51b5;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    select, .staff-list {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .staff-card {
+      background-color: white;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status {
+      font-weight: bold;
+    }
+    .available {
+      color: green;
+    }
+    .not-available {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CampusConnect</h1>
+  <p>Check real-time staff availability before visiting the office</p>
+</header>
+
+<main>
+  <label for="department">Select Department:</label>
+  <select id="department">
+    <option value="academic">Academic Office</option>
+    <option value="finance">Finance Office</option>
+    <option value="admissions">Admissions</option>
+  </select>
+
+  <div class="staff-list" id="staffList"></div>
+</main>
+
+<script>
+  const staffData = {
+    academic: [
+      { name: "Dr. Rekha Sharma", available: true },
+      { name: "Mr. Sunil Kumar", available: false}
+    ],
+    finance: [
+      { name: "Mrs. Leela Reddy", available: false },
+      { name: "Mr. Raghav Rao", available: true }
+    ],
+    admissions: [
+      { name: "Ms. Anjali", available: true },
+      { name: "Mr. Faizan", available: true }
+    ]
+  };
+
+  const deptSelect = document.getElementById('department');
+  const staffList = document.getElementById('staffList');
+
+  function updateStaffList(dept) {
+    staffList.innerHTML = '';
+    const staff = staffData[dept];
+    staff.forEach(person => {
+      const card = document.createElement('div');
+      card.className = 'staff-card';
+
+      const name = document.createElement('div');
+      name.textContent = person.name;
+
+      const status = document.createElement('div');
+      status.className = `status ${person.available ? 'available' : 'not-available'}`;
+      status.textContent = person.available ? 'Available 🟢' : 'Not Available 🔴';
+
+      card.appendChild(name);
+      card.appendChild(status);
+      staffList.appendChild(card);
+    });
+  }
+
+  deptSelect.addEventListener('change', () => {
+    updateStaffList(deptSelect.value);
+  });
+
+  // Initial load
+  updateStaffList(deptSelect.value);
+</script>
+
+</body>
+</html> -->
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusConnect</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #3f51b5;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    select, input[type="text"], .filters {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .staff-list {
+      margin-top: 1.5rem;
+    }
+
+    .staff-card {
+      background-color: white;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .staff-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .available {
+      color: green;
+    }
+
+    .not-available {
+      color: red;
+    }
+
+    @media screen and (min-width: 600px) {
+      .staff-header {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CampusConnect</h1>
+  <p>Check real-time faculty & staff availability across campus</p>
+</header>
+
+<main>
+  <label for="department">Select Department:</label>
+  <select id="department">
+    <option value="academic">Academic Office</option>
+    <option value="finance">Finance Office</option>
+    <option value="admissions">Admissions</option>
+  </select>
+
+  <input type="text" id="searchBar" placeholder="🔍 Search staff by name..." />
+
+  <div class="filter-group">
+    <select id="statusFilter">
+      <option value="all">Show All</option>
+      <option value="available">Only Available</option>
+      <option value="not-available">Only Not Available</option>
+    </select>
+  </div>
+
+  <div class="staff-list" id="staffList"></div>
+</main>
+
+<script>
+  const staffData = {
+    academic: [
+      { name: "Dr. Rekha Sharma", available: true, lastUpdated: "2 mins ago" },
+      { name: "Mr. Sunil Kumar", available: false, lastUpdated: "10 mins ago" }
+    ],
+    finance: [
+      { name: "Mrs. Leela Reddy", available: false, lastUpdated: "5 mins ago" },
+      { name: "Mr. Raghav Rao", available: true, lastUpdated: "Just now" }
+    ],
+    admissions: [
+      { name: "Ms. Anjali", available: true, lastUpdated: "3 mins ago" },
+      { name: "Mr. Faizan", available: true, lastUpdated: "Just now" }
+    ]
+  };
+
+  const deptSelect = document.getElementById('department');
+  const staffList = document.getElementById('staffList');
+  const searchBar = document.getElementById('searchBar');
+  const statusFilter = document.getElementById('statusFilter');
+
+  function displayStaff(dept, searchQuery = '', status = 'all') {
+    staffList.innerHTML = '';
+    const staff = staffData[dept];
+
+    staff.forEach(person => {
+      const nameMatch = person.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const statusMatch =
+        status === 'all' ||
+        (status === 'available' && person.available) ||
+        (status === 'not-available' && !person.available);
+
+      if (nameMatch && statusMatch) {
+        const card = document.createElement('div');
+        card.className = 'staff-card';
+
+        const header = document.createElement('div');
+        header.className = 'staff-header';
+
+        const name = document.createElement('div');
+        name.textContent = person.name;
+
+        const statusTag = document.createElement('div');
+        statusTag.className = `status ${person.available ? 'available' : 'not-available'}`;
+        statusTag.textContent = person.available ? 'Available 🟢' : 'Not Available 🔴';
+
+        header.appendChild(name);
+        header.appendChild(statusTag);
+
+        const time = document.createElement('div');
+        time.style.fontSize = "0.9rem";
+        time.style.color = "#666";
+        time.textContent = `Last updated: ${person.lastUpdated}`;
+
+        card.appendChild(header);
+        card.appendChild(time);
+        staffList.appendChild(card);
+      }
+    });
+  }
+
+  deptSelect.addEventListener('change', () => {
+    displayStaff(deptSelect.value, searchBar.value, statusFilter.value);
+  });
+
+  searchBar.addEventListener('input', () => {
+    displayStaff(deptSelect.value, searchBar.value, statusFilter.value);
+  });
+
+  statusFilter.addEventListener('change', () => {
+    displayStaff(deptSelect.value, searchBar.value, statusFilter.value);
+  });
+
+  // Initial load
+  displayStaff(deptSelect.value);
+</script>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusConnect</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0; padding: 0;
+    }
+    header {
+      background-color: #3f51b5;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    select, input[type="text"], .filters, textarea, input[type="date"], input[type="time"] {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .filter-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .staff-list { margin-top: 1.5rem; }
+    .staff-card {
+      background-color: white;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .staff-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .available { color: green; }
+    .not-available { color: red; }
+    button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #3f51b5;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #mapModal {
+      display: none;
+      position: fixed;
+      top: 10%; left: 10%;
+      width: 80%; height: 80%;
+      background: #fff;
+      box-shadow: 0 0 10px gray;
+      z-index: 10;
+      padding: 10px;
+    }
+    #mapModal button {
+      float: right;
+      background: red;
+    }
+    @media screen and (min-width: 600px) {
+      .staff-header { flex-direction: row; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>ConnectSphere</h1>
+  <p>Check real-time faculty & staff availability across campus</p>
+</header>
+
+<main>
+  <label for="department">Select Department:</label>
+  <select id="department">
+    <option value="academic">Academic Office</option>
+    <option value="finance">Finance Office</option>
+    <option value="admissions">Admissions</option>
+  </select>
+
+  <input type="text" id="searchBar" placeholder="🔍 Search staff by name..." />
+
+  <div class="filter-group">
+    <select id="statusFilter">
+      <option value="all">Show All</option>
+      <option value="available">Only Available</option>
+      <option value="not-available">Only Not Available</option>
+    </select>
+  </div>
+
+  <div class="staff-list" id="staffList"></div>
+
+  <div id="mapModal">
+    <button onclick="closeMap()">❌ Close</button>
+    <iframe id="mapFrame" width="100%" height="90%" style="border:0;" allowfullscreen loading="lazy"></iframe>
+  </div>
+
+  <h3>📅 Request Appointment</h3>
+  <form id="appointmentForm">
+    <label>Staff Name:</label>
+    <input type="text" id="staffName" required />
+    <label>Date:</label>
+    <input type="date" id="appointmentDate" required />
+    <label>Time:</label>
+    <input type="time" id="appointmentTime" required />
+    <label>Purpose:</label>
+    <textarea id="appointmentPurpose" rows="3" required></textarea>
+    <button type="submit">Send Request</button>
+  </form>
+
+  <p id="appointmentStatus" style="color:green;"></p>
+</main>
+
+<script>
+  const staffData = {
+    academic: [
+      { name: "Dr. Rekha Sharma", available: true, lastUpdated: "2 mins ago", location: "Academic Office Block" },
+      { name: "Mr. Sunil Kumar", available: false, lastUpdated: "10 mins ago", location: "Academic Office Block" }
+    ],
+    finance: [
+      { name: "Mrs. Leela Reddy", available: false, lastUpdated: "5 mins ago", location: "Finance Building" },
+      { name: "Mr. Raghav Rao", available: true, lastUpdated: "Just now", location: "Finance Building" }
+    ],
+    admissions: [
+      { name: "Ms. Anjali", available: true, lastUpdated: "3 mins ago", location: "Admin Block" },
+      { name: "Mr. Faizan", available: true, lastUpdated: "Just now", location: "Admin Block" }
+    ]
+  };
+
+  const deptSelect = document.getElementById('department');
+  const staffList = document.getElementById('staffList');
+  const searchBar = document.getElementById('searchBar');
+  const statusFilter = document.getElementById('statusFilter');
+
+  function openMap(location) {
+    const mapModal = document.getElementById('mapModal');
+    const mapFrame = document.getElementById('mapFrame');
+    const mapURL = `https://www.google.com/maps?q=${encodeURIComponent(location)}&output=embed`;
+    mapFrame.src = mapURL;
+    mapModal.style.display = 'block';
+  }
+
+  function closeMap() {
+    document.getElementById('mapModal').style.display = 'none';
+  }
+
+  function displayStaff(dept, searchQuery = '', status = 'all') {
+    staffList.innerHTML = '';
+    const staff = staffData[dept];
+
+    staff.forEach(person => {
+      const nameMatch = person.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const statusMatch =
+        status === 'all' ||
+        (status === 'available' && person.available) ||
+        (status === 'not-available' && !person.available);
+
+      if (nameMatch && statusMatch) {
+        const card = document.createElement('div');
+        card.className = 'staff-card';
+
+        const header = document.createElement('div');
+        header.className = 'staff-header';
+
+        const name = document.createElement('div');
+        name.textContent = person.name;
+
+        const statusTag = document.createElement('div');
+        statusTag.className = `status ${person.available ? 'available' : 'not-available'}`;
+        statusTag.textContent = person.available ? 'Available 🟢' : 'Not Available 🔴';
+
+        header.appendChild(name);
+        header.appendChild(statusTag);
+
+        const time = document.createElement('div');
+        time.style.fontSize = '0.9rem';
+        time.style.color = '#666';
+        time.textContent = `Last updated: ${person.lastUpdated}`;
+
+        const mapBtn = document.createElement('button');
+        mapBtn.textContent = '📍 Locate Office';
+        mapBtn.onclick = () => openMap(person.location);
+
+        card.appendChild(header);
+        card.appendChild(time);
+        card.appendChild(mapBtn);
+
+        staffList.appendChild(card);
+      }
+    });
+  }
+
+  deptSelect.addEventListener('change', () => displayStaff(deptSelect.value, searchBar.value, statusFilter.value));
+  searchBar.addEventListener('input', () => displayStaff(deptSelect.value, searchBar.value, statusFilter.value));
+  statusFilter.addEventListener('change', () => displayStaff(deptSelect.value, searchBar.value, statusFilter.value));
+  displayStaff(deptSelect.value);
+
+  document.getElementById('appointmentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('staffName').value;
+    const date = document.getElementById('appointmentDate').value;
+    const time = document.getElementById('appointmentTime').value;
+    const purpose = document.getElementById('appointmentPurpose').value;
+    document.getElementById('appointmentStatus').textContent = `✅ Appointment request sent to ${name} for ${date} at ${time}.`;
+    this.reset();
+  });
+</script>
+</body>
+</html>
